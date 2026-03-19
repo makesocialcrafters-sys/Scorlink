@@ -108,7 +108,7 @@ const VideoPage = () => {
 
         {/* Tip section */}
         <div className="rounded-xl border border-card-border bg-card p-6 space-y-6">
-          <h2 className="font-display text-2xl text-center">🔥 FEIERST DU DAS TOR?</h2>
+           <h2 className="font-display text-2xl text-center">🔥 FEIERST DU DAS TOR?</h2>
 
           {/* Amount buttons */}
           <div className="grid grid-cols-4 gap-2">

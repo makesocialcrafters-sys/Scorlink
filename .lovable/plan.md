@@ -1,22 +1,25 @@
 
 
-## Fix: Self-tipping prevention & anonymous fan access on /v/[id]
+## Add "Entdecken" (Discover Players) Page
 
-### Problem
-1. Logged-in players can tip their own videos
-2. Fans might encounter auth walls — this must never happen
+### What
+A new public page at `/entdecken` showing all registered players in a grid, sorted by total earnings. No login required.
 
-### Changes — single file: `src/pages/VideoPage.tsx`
+### Changes
 
-**Add auth check in the data loading `useEffect`:**
-- Call `supabase.auth.getUser()` alongside the video/profile fetch
-- Store `isOwnVideo` boolean in state (`user?.id === vid.player_id`)
+**1. Create `src/pages/Entdecken.tsx`**
+- Fetch all profiles where `username IS NOT NULL` from Supabase, ordered by `total_earnings` desc
+- Use the existing `supabase` client from `@/integrations/supabase/client`
+- Use `formatEuro` from `@/lib/helpers` (matching existing import pattern)
+- Layout: Fixed nav bar (FOOTYTIPS logo + "Einloggen" link), header section, responsive card grid
+- Cards show: avatar (or ⚽ fallback), display_name, @username, club/position tags, earnings, "Profil ansehen →" link to `/p/{username}`
+- Loading state with skeleton cards, empty state with emoji
+- Styling follows existing dark theme (card bg `#111`, border `#262626`, neon accent for earnings)
 
-**Conditional rendering below the player card:**
+**2. Update `src/App.tsx`**
+- Import `Entdecken` page
+- Add route: `<Route path="/entdecken" element={<Entdecken />} />`
 
-- **Own video** (`isOwnVideo === true`): Hide the entire tip section. Show an info box instead: "Das ist dein eigenes Video 🎥 – teile den Link damit deine Fans dich feiern können!" with a "Link kopieren" button.
-
-- **Not own video OR not logged in** (`isOwnVideo === false`): Show the tip section exactly as-is. No login button, no register link, no auth prompts of any kind.
-
-No other files need changes. The tip insert already uses the anon key (public RLS policy `Anyone can insert tips`), so anonymous fans can tip without authentication.
+**3. Optionally add nav link from Landing page**
+- Add a "Spieler entdecken" link on the landing page pointing to `/entdecken`
 

@@ -106,6 +106,7 @@ const Onboarding = () => {
         .eq('id', user.id);
 
       if (error) throw error;
+      await refreshProfile();
       setStep(4);
     } catch (err: any) {
       console.error('Profile update failed:', err);

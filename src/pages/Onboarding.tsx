@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { slugify } from "@/lib/helpers";
 import { Check, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { uploadAvatar } from "@/lib/storage";
 
 const POSITIONS = [
   "Torwart", "Innenverteidiger", "Außenverteidiger",
@@ -15,7 +18,9 @@ const POSITIONS = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
+  const [saving, setSaving] = useState(false);
 
   // Step 1
   const [displayName, setDisplayName] = useState("");
@@ -32,6 +37,13 @@ const Onboarding = () => {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
 
+  // Pre-fill name from auth metadata
+  useEffect(() => {
+    if (user?.user_metadata?.full_name) {
+      setDisplayName(user.user_metadata.full_name);
+    }
+  }, [user]);
+
   // Auto-generate username from display name
   useEffect(() => {
     if (step === 3 && displayName) {
@@ -39,20 +51,25 @@ const Onboarding = () => {
     }
   }, [step, displayName]);
 
-  // Check username availability (mock)
+  // Check username availability
   const checkAvailability = useCallback((u: string) => {
     if (!u || u.length < 3) {
       setUsernameAvailable(null);
       return;
     }
     setCheckingUsername(true);
-    // TODO: Query supabase profiles table
-    const timer = setTimeout(() => {
-      setUsernameAvailable(u !== "mario-gomez"); // mock: mario-gomez is taken
+    const timer = setTimeout(async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', u)
+        .maybeSingle();
+      // Available if no match or it's our own profile
+      setUsernameAvailable(!data || data.id === user?.id);
       setCheckingUsername(false);
-    }, 500);
+    }, 400);
     return () => clearTimeout(timer);
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     const cleanup = checkAvailability(username);
@@ -67,9 +84,34 @@ const Onboarding = () => {
     }
   };
 
-  const handleFinish = () => {
-    // TODO: UPDATE profiles in Supabase
-    setStep(4);
+  const handleFinish = async () => {
+    if (!user) return;
+    setSaving(true);
+    try {
+      let avatar_url: string | null = null;
+      if (avatarFile) {
+        avatar_url = await uploadAvatar(user.id, avatarFile);
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          username,
+          display_name: displayName,
+          club_name: clubName,
+          position,
+          bio: bio || null,
+          ...(avatar_url ? { avatar_url } : {}),
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      setStep(4);
+    } catch (err: any) {
+      console.error('Profile update failed:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const progressWidth = `${(Math.min(step, 3) / 3) * 100}%`;
@@ -77,12 +119,10 @@ const Onboarding = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
-        {/* Logo */}
         <div className="text-center mb-8">
           <span className="font-display text-3xl text-neon">FOOTYTIPS</span>
         </div>
 
-        {/* Progress bar */}
         {step <= 3 && (
           <div className="mb-8">
             <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -101,7 +141,6 @@ const Onboarding = () => {
         {step === 1 && (
           <div className="space-y-6 animate-fade-in-up">
             <h2 className="font-display text-3xl text-center">DEIN PROFIL</h2>
-
             <div className="flex flex-col items-center gap-4">
               <label className="cursor-pointer group">
                 <div className="w-24 h-24 rounded-full bg-secondary border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden group-hover:border-neon transition-colors">
@@ -115,7 +154,6 @@ const Onboarding = () => {
               </label>
               <p className="text-muted-foreground text-xs">Profilbild hochladen</p>
             </div>
-
             <div className="space-y-2">
               <Label>Dein vollständiger Name</Label>
               <Input
@@ -126,7 +164,6 @@ const Onboarding = () => {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label>Kurzes Bio <span className="text-muted-foreground">(optional)</span></Label>
               <Textarea
@@ -136,7 +173,6 @@ const Onboarding = () => {
                 className="bg-card border-card-border min-h-[80px]"
               />
             </div>
-
             <Button
               variant="neon"
               className="w-full h-12 rounded-full"
@@ -152,7 +188,6 @@ const Onboarding = () => {
         {step === 2 && (
           <div className="space-y-6 animate-fade-in-up">
             <h2 className="font-display text-3xl text-center">VEREIN & POSITION</h2>
-
             <div className="space-y-2">
               <Label>Vereinsname</Label>
               <Input
@@ -163,7 +198,6 @@ const Onboarding = () => {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label>Position</Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -183,7 +217,6 @@ const Onboarding = () => {
                 ))}
               </div>
             </div>
-
             <div className="flex gap-3">
               <Button variant="secondary" className="flex-1 h-12 rounded-full" onClick={() => setStep(1)}>
                 ← Zurück
@@ -204,7 +237,6 @@ const Onboarding = () => {
         {step === 3 && (
           <div className="space-y-6 animate-fade-in-up">
             <h2 className="font-display text-3xl text-center">DEIN LINK</h2>
-
             <div className="space-y-2">
               <Label>Username</Label>
               <div className="relative">
@@ -231,7 +263,6 @@ const Onboarding = () => {
                 <p className="text-destructive text-sm">Dieser Username ist leider vergeben.</p>
               )}
             </div>
-
             <div className="flex gap-3">
               <Button variant="secondary" className="flex-1 h-12 rounded-full" onClick={() => setStep(2)}>
                 ← Zurück
@@ -240,9 +271,9 @@ const Onboarding = () => {
                 variant="neon"
                 className="flex-1 h-12 rounded-full"
                 onClick={handleFinish}
-                disabled={!username || !usernameAvailable}
+                disabled={!username || !usernameAvailable || saving}
               >
-                Profil speichern
+                {saving ? "Wird gespeichert…" : "Profil speichern"}
               </Button>
             </div>
           </div>
@@ -261,7 +292,7 @@ const Onboarding = () => {
               <Button
                 variant="neonOutline"
                 size="sm"
-                onClick={() => navigator.clipboard.writeText(`footytips.app/p/${username}`)}
+                onClick={() => navigator.clipboard.writeText(`${window.location.origin}/p/${username}`)}
               >
                 Kopieren
               </Button>

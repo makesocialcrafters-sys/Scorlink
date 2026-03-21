@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -14,12 +15,20 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    // TODO: Supabase auth.signUp
-    // Simulate for now
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/onboarding");
-    }, 800);
+    const { error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        data: { full_name: form.name },
+        emailRedirectTo: window.location.origin + "/onboarding",
+      },
+    });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    navigate("/onboarding");
   };
 
   return (

@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import Navbar from "@/components/Navbar";
 import { Upload as UploadIcon } from "lucide-react";
-
-const MAX_SIZE = 20971520; // 20MB
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { uploadVideo, validateVideoFile } from "@/lib/storage";
 
 const Upload = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -18,16 +20,14 @@ const Upload = () => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
+  const [videoId, setVideoId] = useState("");
   const [dragOver, setDragOver] = useState(false);
 
   const handleFile = (f: File) => {
     setError("");
-    if (!["video/mp4", "video/quicktime"].includes(f.type)) {
-      setError("Nur MP4 und MOV Dateien sind erlaubt.");
-      return;
-    }
-    if (f.size > MAX_SIZE) {
-      setError("Die Datei darf maximal 20 MB groß sein.");
+    const validationError = validateVideoFile(f);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setFile(f);
@@ -46,32 +46,38 @@ const Upload = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) return;
+    if (!file || !user) return;
     setUploading(true);
-    // Simulate upload progress
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise((r) => setTimeout(r, 150));
-      setProgress(i);
+    setError("");
+    try {
+      const videoUrl = await uploadVideo(user.id, file, setProgress);
+      const { data, error: dbError } = await supabase
+        .from('videos')
+        .insert({ player_id: user.id, title, video_url: videoUrl })
+        .select('id')
+        .single();
+      if (dbError) throw dbError;
+      setVideoId(data.id);
+      setDone(true);
+    } catch (err: any) {
+      setError(err.message || "Upload fehlgeschlagen.");
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
-    setDone(true);
   };
 
   if (done) {
+    const videoLink = `${window.location.origin}/v/${videoId}`;
     return (
       <div className="min-h-screen">
-        <Navbar showProfile username="max-mustermann" />
+        <Navbar showProfile />
         <div className="container pt-24 max-w-lg text-center">
           <div className="animate-fade-in-up space-y-6">
             <p className="text-6xl">🔥</p>
             <h1 className="font-display text-4xl text-neon neon-text-glow">UPLOAD ERFOLGREICH!</h1>
             <div className="bg-card border border-card-border rounded-xl p-4 flex items-center justify-between gap-3">
-              <span className="text-sm truncate">footytips.app/v/abc123</span>
-              <Button
-                variant="neonOutline"
-                size="sm"
-                onClick={() => navigator.clipboard.writeText("footytips.app/v/abc123")}
-              >
+              <span className="text-sm truncate">{videoLink}</span>
+              <Button variant="neonOutline" size="sm" onClick={() => navigator.clipboard.writeText(videoLink)}>
                 Kopieren
               </Button>
             </div>
@@ -91,12 +97,11 @@ const Upload = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar showProfile username="max-mustermann" />
+      <Navbar showProfile />
       <div className="container pt-24 max-w-lg">
         <h1 className="font-display text-4xl mb-8 text-center">HIGHLIGHT HOCHLADEN</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Drop zone */}
           <div
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}

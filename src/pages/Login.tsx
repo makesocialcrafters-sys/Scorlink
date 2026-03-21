@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,11 +15,16 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    // TODO: Supabase auth.signInWithPassword
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/dashboard");
-    }, 800);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    });
+    setLoading(false);
+    if (error) {
+      setError("E-Mail oder Passwort ist falsch.");
+      return;
+    }
+    navigate("/dashboard");
   };
 
   return (

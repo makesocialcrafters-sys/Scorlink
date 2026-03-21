@@ -1,41 +1,57 @@
-import { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { formatEuro } from "@/lib/helpers";
-import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Video, Profile } from "@/lib/types";
 
 const PRESET_AMOUNTS = [100, 300, 500, 1000];
-
-const mockVideo = {
-  id: "v1",
-  title: "Traumtor aus 25 Metern",
-  video_url: "",
-  view_count: 342,
-};
-
-const mockPlayer = {
-  display_name: "Mario Gomez",
-  club_name: "FC Beispielstadt",
-  position: "Mittelstürmer",
-  avatar_url: "",
-};
 
 const VideoPage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const isSuccess = searchParams.get("success") === "true";
 
+  const [video, setVideo] = useState<Video | null>(null);
+  const [player, setPlayer] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const [selectedAmount, setSelectedAmount] = useState<number | null>(300);
   const [customAmount, setCustomAmount] = useState("");
   const [fanName, setFanName] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const effectiveAmount = customAmount ? Math.round(parseFloat(customAmount) * 100) : selectedAmount;
+
+  useEffect(() => {
+    const load = async () => {
+      const { data: vid } = await supabase
+        .from('videos')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (!vid) { setLoading(false); return; }
+
+      // Increment view count
+      supabase.rpc('increment_view_count', { video_id: id });
+
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', vid.player_id)
+        .single();
+
+      setVideo(vid as unknown as Video);
+      setPlayer(prof as unknown as Profile);
+      setLoading(false);
+    };
+    load();
+  }, [id]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -46,19 +62,43 @@ const VideoPage = () => {
   }, [isSuccess]);
 
   const handleSendTip = async () => {
-    if (!effectiveAmount || effectiveAmount < 100) return;
-    setLoading(true);
-    // TODO: POST to /api/checkout
-    setTimeout(() => {
-      setLoading(false);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 4000);
-    }, 1000);
+    if (!effectiveAmount || effectiveAmount < 100 || !video || !player) return;
+    setSending(true);
+    // TODO: POST to checkout edge function for Stripe
+    // For now, insert a tip directly as 'pending'
+    await supabase.from('tips').insert({
+      player_id: player.id,
+      video_id: video.id,
+      amount: effectiveAmount,
+      fan_name: fanName || null,
+      message: message || null,
+      status: 'pending',
+    });
+    setSending(false);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 4000);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Laden…</div>
+      </div>
+    );
+  }
+
+  if (!video) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <p className="text-5xl">🤷</p>
+        <h1 className="font-display text-3xl">VIDEO NICHT GEFUNDEN</h1>
+        <Link to="/" className="text-neon hover:underline text-sm">Zur Startseite</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-12">
-      {/* Success overlay */}
       {showConfetti && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in-up">
           <div className="text-center p-8">
@@ -70,11 +110,10 @@ const VideoPage = () => {
       )}
 
       <div className="container max-w-2xl px-4 pt-6">
-        {/* Video player */}
-        <div className="rounded-xl overflow-hidden bg-secondary aspect-video mb-6 flex items-center justify-center">
-          {mockVideo.video_url ? (
+        <div className="rounded-xl overflow-hidden bg-secondary aspect-video mb-6">
+          {video.video_url ? (
             <video
-              src={mockVideo.video_url}
+              src={video.video_url}
               autoPlay
               muted
               playsInline
@@ -82,35 +121,33 @@ const VideoPage = () => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="text-center">
-              <p className="text-5xl mb-2">⚽</p>
-              <p className="text-muted-foreground text-sm">Video-Player</p>
+            <div className="flex items-center justify-center h-full">
+              <p className="text-5xl">⚽</p>
             </div>
           )}
         </div>
 
-        <h1 className="font-display text-3xl mb-4">{mockVideo.title.toUpperCase()}</h1>
+        <h1 className="font-display text-3xl mb-4">{video.title.toUpperCase()}</h1>
 
-        {/* Player info */}
-        <div className="flex items-center gap-3 mb-8 p-4 rounded-xl bg-card border border-card-border">
-          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-xl shrink-0">
-            {mockPlayer.avatar_url ? (
-              <img src={mockPlayer.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-            ) : (
-              "⚽"
-            )}
-          </div>
-          <div>
-            <p className="font-medium text-foreground">{mockPlayer.display_name}</p>
-            <p className="text-xs text-muted-foreground">{mockPlayer.club_name} · {mockPlayer.position}</p>
-          </div>
-        </div>
+        {player && (
+          <Link to={`/p/${player.username}`} className="flex items-center gap-3 mb-8 p-4 rounded-xl bg-card border border-card-border hover:border-neon/30 transition-colors">
+            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-xl shrink-0 overflow-hidden">
+              {player.avatar_url ? (
+                <img src={player.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                "⚽"
+              )}
+            </div>
+            <div>
+              <p className="font-medium text-foreground">{player.display_name}</p>
+              <p className="text-xs text-muted-foreground">{player.club_name} · {player.position}</p>
+            </div>
+          </Link>
+        )}
 
-        {/* Tip section */}
         <div className="rounded-xl border border-card-border bg-card p-6 space-y-6">
-           <h2 className="font-display text-2xl text-center">🔥 FEIERST DU DAS TOR?</h2>
+          <h2 className="font-display text-2xl text-center">🔥 FEIERST DU DAS TOR?</h2>
 
-          {/* Amount buttons */}
           <div className="grid grid-cols-4 gap-2">
             {PRESET_AMOUNTS.map((amt) => (
               <button
@@ -128,7 +165,6 @@ const VideoPage = () => {
             ))}
           </div>
 
-          {/* Custom amount */}
           <div className="space-y-2">
             <Label>Oder eigenen Betrag eingeben (€)</Label>
             <Input
@@ -142,7 +178,6 @@ const VideoPage = () => {
             />
           </div>
 
-          {/* Fan info */}
           <div className="space-y-4">
             <Input
               value={fanName}
@@ -162,9 +197,9 @@ const VideoPage = () => {
             variant="neon"
             className="w-full h-14 rounded-full text-lg"
             onClick={handleSendTip}
-            disabled={!effectiveAmount || effectiveAmount < 100 || loading}
+            disabled={!effectiveAmount || effectiveAmount < 100 || sending}
           >
-            {loading ? "Wird verarbeitet…" : "⚡ Support senden"}
+            {sending ? "Wird verarbeitet…" : "⚡ Support senden"}
           </Button>
         </div>
       </div>

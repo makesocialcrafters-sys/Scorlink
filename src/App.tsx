@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import OnboardingRoute from "@/components/OnboardingRoute";
 import Landing from "./pages/Landing";
+import Entdecken from "./pages/Entdecken";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";

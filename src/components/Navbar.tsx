@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = ({ showProfile, username }: { showProfile?: boolean; username?: string }) => {
@@ -21,6 +22,11 @@ const Navbar = ({ showProfile, username }: { showProfile?: boolean; username?: s
             >
               Mein Profil →
             </a>
+          )}
+          {showProfile && (
+            <Link to="/dashboard/settings" className="text-muted-foreground hover:text-neon transition-colors">
+              <Settings className="w-5 h-5" />
+            </Link>
           )}
           {showProfile && (
             <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={signOut}>

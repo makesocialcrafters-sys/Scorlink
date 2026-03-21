@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
+import Settings from "./pages/Settings";
 import PlayerProfile from "./pages/PlayerProfile";
 import VideoPage from "./pages/VideoPage";
 import NotFound from "./pages/NotFound";

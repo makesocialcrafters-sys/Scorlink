@@ -22,11 +22,18 @@ const Landing = () => (
         <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto mb-10">
           Die Plattform, auf der Amateurfußballer ihre besten Momente teilen – und Fans sie supporten.
         </p>
-        <Link to="/register">
-          <Button variant="neon" size="lg" className="text-lg px-10 py-6 rounded-full animate-pulse-neon">
-            Kostenloses Profil erstellen
-          </Button>
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <Link to="/register">
+            <Button variant="neon" size="lg" className="text-lg px-10 py-6 rounded-full animate-pulse-neon">
+              Kostenloses Profil erstellen
+            </Button>
+          </Link>
+          <Link to="/entdecken">
+            <Button variant="outline" size="lg" className="text-lg px-10 py-6 rounded-full border-card-border hover:border-neon/40">
+              Spieler entdecken
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
 

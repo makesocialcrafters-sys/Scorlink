@@ -18,7 +18,7 @@ const POSITIONS = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
 

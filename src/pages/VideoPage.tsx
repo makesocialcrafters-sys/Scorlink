@@ -18,6 +18,7 @@ const VideoPage = () => {
   const [video, setVideo] = useState<Video | null>(null);
   const [player, setPlayer] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isOwnVideo, setIsOwnVideo] = useState(false);
 
   const [selectedAmount, setSelectedAmount] = useState<number | null>(300);
   const [customAmount, setCustomAmount] = useState("");

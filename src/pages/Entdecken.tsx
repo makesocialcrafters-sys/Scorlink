@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { formatEuro } from "@/lib/helpers";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Profile } from "@/lib/types";
 
@@ -128,10 +127,6 @@ export default function Entdecken() {
                   )}
                 </div>
 
-                {/* Earnings */}
-                <div className="text-sm text-neon font-semibold mb-4">
-                  ⚡ {formatEuro(player.total_earnings)} gesammelt
-                </div>
 
                 {/* CTA */}
                 <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">

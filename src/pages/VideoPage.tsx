@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
 import {
   AlertDialog,
   AlertDialogAction,

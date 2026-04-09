@@ -85,8 +85,6 @@ export async function uploadVideo(
   onProgress?.(100);
   return data.publicUrl;
 }
-  const ext = file.name.split('.').pop();
-  const path = `${userId}/${Date.now()}.${ext}`;
   onProgress?.(20);
   const { error } = await supabase.storage
     .from('videos')

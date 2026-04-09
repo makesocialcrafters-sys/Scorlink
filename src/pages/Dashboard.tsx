@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 import { relativeTime } from "@/lib/helpers";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { deleteVideoAssets } from "@/lib/storage";
 import type { Profile, Video } from "@/lib/types";
 
 const StatCard = ({ label, value }: { label: string; value: string }) => (
@@ -19,6 +32,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -33,6 +47,17 @@ const Dashboard = () => {
     };
     load();
   }, [user]);
+
+  const handleDelete = async (video: Video) => {
+    setDeletingId(video.id);
+    try {
+      await deleteVideoAssets(video);
+      setVideos((prev) => prev.filter((v) => v.id !== video.id));
+    } catch {
+      // silently fail
+    }
+    setDeletingId(null);
+  };
 
   if (loading || !profile) {
     return (
@@ -74,23 +99,51 @@ const Dashboard = () => {
           ) : (
             <div className="space-y-3">
               {videos.map((v) => (
-                <Link
+                <div
                   key={v.id}
-                  to={`/v/${v.id}`}
                   className="flex gap-4 rounded-xl border border-card-border bg-card p-4 hover:border-neon/30 transition-colors"
                 >
-                  <div className="w-24 h-16 rounded-lg bg-secondary shrink-0 overflow-hidden flex items-center justify-center">
-                    {v.thumbnail_url ? (
-                      <img src={v.thumbnail_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-2xl">🎥</span>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-medium text-foreground line-clamp-1">{v.title}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{relativeTime(v.created_at)}</p>
-                  </div>
-                </Link>
+                  <Link to={`/v/${v.id}`} className="flex gap-4 flex-1 min-w-0">
+                    <div className="w-24 h-16 rounded-lg bg-secondary shrink-0 overflow-hidden flex items-center justify-center">
+                      {v.thumbnail_url ? (
+                        <img src={v.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl">🎥</span>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground line-clamp-1">{v.title}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{relativeTime(v.created_at)}</p>
+                    </div>
+                  </Link>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 text-muted-foreground hover:text-destructive"
+                        disabled={deletingId === v.id}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Video löschen?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          „{v.title}" wird unwiderruflich gelöscht.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(v)}>
+                          Löschen
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               ))}
             </div>
           )}

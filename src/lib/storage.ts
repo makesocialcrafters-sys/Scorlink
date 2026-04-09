@@ -43,31 +43,6 @@ export async function uploadAvatar(userId: string, file: File): Promise<string> 
   return data.publicUrl;
 }
 
-function extractStoragePath(publicUrl: string, bucket: string): string | null {
-  const marker = `/object/public/${bucket}/`;
-  const idx = publicUrl.indexOf(marker);
-  if (idx === -1) return null;
-  return publicUrl.substring(idx + marker.length);
-}
-
-export async function deleteVideoAssets(video: { id: string; video_url: string; thumbnail_url?: string | null }) {
-  // Delete video file from storage
-  const videoPath = extractStoragePath(video.video_url, 'videos');
-  if (videoPath) {
-    await supabase.storage.from('videos').remove([videoPath]);
-  }
-  // Delete thumbnail from storage if present
-  if (video.thumbnail_url) {
-    const thumbPath = extractStoragePath(video.thumbnail_url, 'thumbnails');
-    if (thumbPath) {
-      await supabase.storage.from('thumbnails').remove([thumbPath]);
-    }
-  }
-  // Delete DB record
-  const { error } = await supabase.from('videos').delete().eq('id', video.id);
-  if (error) throw new Error('Video konnte nicht gelöscht werden: ' + error.message);
-}
-
 export async function uploadVideo(
   userId: string,
   file: File,
@@ -85,13 +60,25 @@ export async function uploadVideo(
   onProgress?.(100);
   return data.publicUrl;
 }
-  onProgress?.(20);
-  const { error } = await supabase.storage
-    .from('videos')
-    .upload(path, file, { cacheControl: '3600', upsert: false });
-  if (error) throw new Error('Video-Upload fehlgeschlagen: ' + error.message);
-  onProgress?.(90);
-  const { data } = supabase.storage.from('videos').getPublicUrl(path);
-  onProgress?.(100);
-  return data.publicUrl;
+
+function extractStoragePath(publicUrl: string, bucket: string): string | null {
+  const marker = `/object/public/${bucket}/`;
+  const idx = publicUrl.indexOf(marker);
+  if (idx === -1) return null;
+  return publicUrl.substring(idx + marker.length);
+}
+
+export async function deleteVideoAssets(video: { id: string; video_url: string; thumbnail_url?: string | null }) {
+  const videoPath = extractStoragePath(video.video_url, 'videos');
+  if (videoPath) {
+    await supabase.storage.from('videos').remove([videoPath]);
+  }
+  if (video.thumbnail_url) {
+    const thumbPath = extractStoragePath(video.thumbnail_url, 'thumbnails');
+    if (thumbPath) {
+      await supabase.storage.from('thumbnails').remove([thumbPath]);
+    }
+  }
+  const { error } = await supabase.from('videos').delete().eq('id', video.id);
+  if (error) throw new Error('Video konnte nicht gelöscht werden: ' + error.message);
 }

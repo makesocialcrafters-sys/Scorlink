@@ -1,15 +1,31 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { deleteVideoAssets } from "@/lib/storage";
 import type { Video, Profile } from "@/lib/types";
 
 const VideoPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [video, setVideo] = useState<Video | null>(null);
   const [player, setPlayer] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwnVideo, setIsOwnVideo] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const viewCounted = useRef(false);
 
   useEffect(() => {
     const load = async () => {
@@ -25,13 +41,31 @@ const VideoPage = () => {
         .eq("id", vid.player_id)
         .single();
 
-      setIsOwnVideo(user?.id === vid.player_id);
+      const own = user?.id === vid.player_id;
+      setIsOwnVideo(own);
       setVideo(vid as unknown as Video);
       setPlayer(prof as unknown as Profile);
       setLoading(false);
+
+      // Increment view count for non-own videos
+      if (!own && !viewCounted.current) {
+        viewCounted.current = true;
+        supabase.rpc("increment_view_count", { video_id: vid.id });
+      }
     };
     load();
   }, [id]);
+
+  const handleDelete = async () => {
+    if (!video) return;
+    setDeleting(true);
+    try {
+      await deleteVideoAssets(video);
+      navigate("/dashboard");
+    } catch {
+      setDeleting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -99,13 +133,37 @@ const VideoPage = () => {
             <p className="text-foreground font-medium">
               Das ist dein eigenes Video – teile den Link damit deine Fans dich feiern können!
             </p>
-            <Button
-              variant="neon"
-              className="rounded-full"
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
-            >
-              Link kopieren 📋
-            </Button>
+            <div className="flex items-center justify-center gap-3">
+              <Button
+                variant="neon"
+                className="rounded-full"
+                onClick={() => navigator.clipboard.writeText(window.location.href)}
+              >
+                Link kopieren 📋
+              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="icon" className="rounded-full" disabled={deleting}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Video löschen?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Das Video wird unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+                      {deleting ? "Wird gelöscht…" : "Löschen"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         )}
       </div>

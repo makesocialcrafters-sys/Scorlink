@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { Settings, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = ({ showProfile, username }: { showProfile?: boolean; username?: string }) => {
@@ -9,10 +9,19 @@ const Navbar = ({ showProfile, username }: { showProfile?: boolean; username?: s
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container flex h-14 items-center justify-between">
-        <Link to="/" className="font-display text-2xl text-neon tracking-wider">
+        <Link to="/dashboard" className="font-display text-2xl text-neon tracking-wider">
           SCORLINK
         </Link>
         <div className="flex items-center gap-3">
+          {showProfile && (
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+          )}
           {showProfile && username && (
             <a
               href={`/p/${username}`}

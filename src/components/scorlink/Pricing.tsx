@@ -130,6 +130,11 @@ const Pricing = () => {
                 >
                   {t.cta}
                 </a>
+                {isPro && (
+                  <div className="font-mono-meta mt-5 text-center text-[10px] font-medium uppercase tracking-[0.24em] text-cream opacity-60">
+                    Schüler &amp; Studenten: € 2,90 / Monat
+                  </div>
+                )}
               </div>
             );
           })}

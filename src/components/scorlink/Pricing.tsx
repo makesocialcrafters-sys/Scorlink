@@ -10,32 +10,32 @@ type Tier = {
 
 const tiers: Tier[] = [
   {
-    tier: "Tier · 01",
-    name: "Free Kick",
+    tier: "Erste Analyse",
+    name: "Gratis.",
     price: "€ 0",
-    period: "Immer kostenlos",
+    period: "Dein erster Report ist kostenlos",
     features: [
       { text: "Profil anlegen", yes: true },
-      { text: "Eine Test-Analyse", yes: true },
+      { text: "Ein Spiel analysieren", yes: true },
+      { text: "Voller Coach-Report", yes: true },
+      { text: "Weitere Analysen", yes: false },
       { text: "Sichtbar im Discover", yes: false },
-      { text: "Wöchentliche Reports", yes: false },
-      { text: "Volle Entwicklungs-Historie", yes: false },
     ],
-    cta: "Kostenlos starten",
+    cta: "Kostenlos testen",
   },
   {
-    tier: "Tier · 02",
-    name: "Scorlink Pro",
-    price: "€ 14,90",
+    tier: "Danach",
+    name: "Scorlink",
+    price: "€ 9,90",
     period: "Pro Monat · jederzeit kündbar",
     features: [
-      { text: "Alles aus Free Kick", yes: true },
       { text: "Unbegrenzte Analysen", yes: true },
+      { text: "Volle Coach-Reports", yes: true },
       { text: "Sichtbar im Discover", yes: true },
       { text: "Priorität bei Scouts", yes: true },
-      { text: "Volle Entwicklungs-Historie", yes: true },
+      { text: "Entwicklungs-Historie", yes: true },
     ],
-    cta: "Pro werden →",
+    cta: "Jetzt starten →",
     pro: true,
   },
 ];
@@ -130,6 +130,11 @@ const Pricing = () => {
                 >
                   {t.cta}
                 </a>
+                {isPro && (
+                  <div className="font-mono-meta mt-5 text-center text-[10px] font-medium uppercase tracking-[0.24em] text-cream opacity-60">
+                    Schüler &amp; Studenten: € 2,90 / Monat
+                  </div>
+                )}
               </div>
             );
           })}

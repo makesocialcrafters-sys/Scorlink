@@ -1,4 +1,7 @@
+import { useAuthModal } from "@/components/scorlink/AuthModals";
+
 const FinalCta = () => {
+  const { open } = useAuthModal();
   return (
     <section id="signup" className="relative overflow-hidden bg-bordeaux px-6 py-[200px] text-center text-cream md:px-10">
       <div

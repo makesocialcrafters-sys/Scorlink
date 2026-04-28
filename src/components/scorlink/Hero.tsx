@@ -1,4 +1,7 @@
+import { useAuthModal } from "@/components/scorlink/AuthModals";
+
 const Hero = () => {
+  const { open } = useAuthModal();
   return (
     <section className="relative flex min-h-[88vh] items-center overflow-hidden border-b border-bordeaux px-6 py-[120px] pb-[140px] md:px-10 md:pt-[120px]">
       {/* Field illustration */}

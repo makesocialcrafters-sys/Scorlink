@@ -40,7 +40,10 @@ const tiers: Tier[] = [
   },
 ];
 
+import { useAuthModal } from "@/components/scorlink/AuthModals";
+
 const Pricing = () => {
+  const { open } = useAuthModal();
   return (
     <section id="pricing" className="relative border-b border-bordeaux bg-cream px-6 py-[140px] text-bordeaux md:px-10">
       <div className="mx-auto max-w-[1200px]">

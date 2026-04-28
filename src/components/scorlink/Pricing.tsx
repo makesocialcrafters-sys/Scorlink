@@ -40,7 +40,10 @@ const tiers: Tier[] = [
   },
 ];
 
+import { useAuthModal } from "@/components/scorlink/AuthModals";
+
 const Pricing = () => {
+  const { open } = useAuthModal();
   return (
     <section id="pricing" className="relative border-b border-bordeaux bg-cream px-6 py-[140px] text-bordeaux md:px-10">
       <div className="mx-auto max-w-[1200px]">
@@ -120,16 +123,16 @@ const Pricing = () => {
                   })}
                 </ul>
 
-                <a
-                  href="#signup"
-                  className={`mt-auto block border px-4 py-[18px] text-center font-body text-[14px] font-medium tracking-[0.04em] no-underline transition-all duration-300 ${
+                <button
+                  onClick={() => open("signup")}
+                  className={`mt-auto block w-full border px-4 py-[18px] text-center font-body text-[14px] font-medium tracking-[0.04em] transition-all duration-300 ${
                     isPro
                       ? "border-cream bg-cream text-bordeaux hover:bg-transparent hover:text-cream"
                       : "border-bordeaux bg-bordeaux text-cream hover:bg-cream hover:text-bordeaux"
                   }`}
                 >
                   {t.cta}
-                </a>
+                </button>
                 {isPro && (
                   <div className="font-mono-meta mt-5 text-center text-[10px] font-medium uppercase tracking-[0.24em] text-cream opacity-60">
                     Schüler &amp; Studenten: € 2,90 / Monat

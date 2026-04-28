@@ -1,4 +1,7 @@
+import { useAuthModal } from "@/components/scorlink/AuthModals";
+
 const FinalCta = () => {
+  const { open } = useAuthModal();
   return (
     <section id="signup" className="relative overflow-hidden bg-bordeaux px-6 py-[200px] text-center text-cream md:px-10">
       <div
@@ -32,13 +35,13 @@ const FinalCta = () => {
           Anmelden. Profil. Erstes Video. Du bist drin.
         </p>
 
-        <a
-          href="#"
-          className="inline-flex items-center gap-[14px] border border-cream bg-cream px-[42px] py-[22px] font-body text-[16px] font-medium tracking-[0.04em] text-bordeaux no-underline transition-all duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-cream"
+        <button
+          onClick={() => open("signup")}
+          className="inline-flex items-center gap-[14px] border border-cream bg-cream px-[42px] py-[22px] font-body text-[16px] font-medium tracking-[0.04em] text-bordeaux transition-all duration-300 hover:-translate-y-0.5 hover:bg-transparent hover:text-cream"
         >
-          Jetzt starten
+          Kostenlos starten
           <span className="font-display text-[18px] font-light">→</span>
-        </a>
+        </button>
       </div>
     </section>
   );

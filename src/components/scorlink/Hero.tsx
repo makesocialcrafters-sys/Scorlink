@@ -31,13 +31,13 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-wrap items-center gap-7">
-          <a
-            href="#signup"
-            className="inline-flex items-center gap-[14px] border border-bordeaux bg-bordeaux px-9 py-[19px] font-body text-[14px] font-medium tracking-[0.04em] text-cream no-underline transition-all duration-300 hover:-translate-y-0.5 hover:bg-cream hover:text-bordeaux"
+          <button
+            onClick={() => open("signup")}
+            className="inline-flex items-center gap-[14px] border border-bordeaux bg-bordeaux px-9 py-[19px] font-body text-[14px] font-medium tracking-[0.04em] text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-cream hover:text-bordeaux"
           >
-            Jetzt anmelden
+            Kostenlos starten
             <span className="font-display text-[18px] font-light">→</span>
-          </a>
+          </button>
           <a
             href="#pricing"
             className="font-mono-meta border-b border-bordeaux pb-[5px] text-[11px] font-medium uppercase tracking-[0.22em] text-bordeaux no-underline opacity-70 transition-opacity duration-300 hover:opacity-100"

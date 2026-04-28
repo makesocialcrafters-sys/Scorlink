@@ -12,7 +12,7 @@ const FinalCta = () => {
 
       <div className="relative z-[2] mx-auto max-w-[800px]">
         <div className="font-mono-meta mb-9 text-[11px] font-medium uppercase tracking-[0.32em] text-cream opacity-60">
-          14 Tage Gratis · Keine Kreditkarte
+          Erste Analyse gratis · Keine Kreditkarte
         </div>
 
         <h2

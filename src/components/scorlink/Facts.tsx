@@ -1,23 +1,23 @@
 const facts = [
   {
-    num: "50%",
-    label: "aller Akademie-Spieler verlassen das System bevor sie 16 sind — meist still und ohne Alternative.",
-    source: "Premier League Report · 2012",
+    num: "270M",
+    label: "Menschen spielen weltweit aktiv Fußball — in über 200 Ländern, vom Bolzplatz bis zur Akademie.",
+    source: "FIFA Big Count · Global",
   },
   {
-    num: "98%",
-    label: "der englischen Akademie-Spieler mit 16 spielen mit 18 nicht mehr in den Top-5-Ligen.",
-    source: "Calvin · No Hunger in Paradise",
+    num: "24%",
+    label: "der Jugendspieler weltweit verlassen den organisierten Fußball jedes Jahr — bei Mädchen sogar 27%.",
+    source: "Møllerløkken et al. · Internationales Review · 2015",
   },
   {
-    num: "4%",
-    label: "der ausgebildeten 13- bis 18-jährigen Akademie-Talente schaffen den Sprung ins Profi-Geschäft.",
-    source: "University of Essex · 2024",
+    num: "130K",
+    label: "professionelle Fußballer gibt es weltweit. Von 270 Millionen Spielern. Der Rest bleibt unsichtbar.",
+    source: "FIFA Professional Football Report · 2023",
   },
   {
-    num: "55%",
-    label: "der freigestellten Spieler zeigen klinisch relevante psychische Belastungen drei Wochen nach dem Aus.",
-    source: "Dr. Blakelock · Teesside University",
+    num: "40%",
+    label: "Dropout-Rate im Jugendsport in manchen Ländern. Die meisten hören auf weil sie keine Perspektive sehen.",
+    source: "Frontiers in Sports · Globale Meta-Analyse · 2021",
   },
 ];
 
@@ -27,12 +27,12 @@ const Facts = () => {
       <div className="relative z-[2] mx-auto max-w-[1280px]">
         <div className="font-mono-meta mb-7 flex items-center gap-[14px] text-[11px] font-medium uppercase tracking-[0.28em] text-bordeaux opacity-70">
           <span className="h-px w-8 bg-bordeaux/60" />
-          Die ehrlichen Zahlen
+          Weltweit · Die Zahlen
         </div>
 
         <h2 className="font-display mb-16 max-w-[1000px] text-[clamp(48px,7vw,92px)] font-normal leading-none tracking-[-0.04em] text-bordeaux">
-          Talente werden nicht entdeckt.<br />
-          <span className="font-display-italic">Sie verschwinden.</span>
+          270 Millionen spielen.<br />
+          <span className="font-display-italic">Fast keiner wird gesehen.</span>
         </h2>
 
         <div className="mt-16 grid grid-cols-1 border-t border-bordeaux lg:grid-cols-2">

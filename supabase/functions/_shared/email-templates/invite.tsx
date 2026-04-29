@@ -11,6 +11,7 @@ import {
   Html,
   Link,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -20,32 +21,30 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({
-  siteName,
-  siteUrl,
-  confirmationUrl,
-}: InviteEmailProps) => (
-  <Html lang="en" dir="ltr">
+export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
+  <Html lang="de" dir="ltr">
     <Head />
-    <Preview>You've been invited to join {siteName}</Preview>
+    <Preview>Du wurdest zu Scorlink eingeladen</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>You've been invited</Heading>
+        <Section style={brand}>
+          <Text style={brandMark}>Scorlink</Text>
+        </Section>
+        <Heading style={h1}>Du bist eingeladen.</Heading>
         <Text style={text}>
-          You've been invited to join{' '}
-          <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
-          </Link>
-          . Click the button below to accept the invitation and create your
-          account.
+          Du wurdest eingeladen, bei{' '}
+          <Link href={siteUrl} style={link}><strong>Scorlink</strong></Link>{' '}
+          dabei zu sein. Klick auf den Button, um dein Konto zu erstellen.
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Accept Invitation
-        </Button>
+        <Section style={buttonWrap}>
+          <Button style={button} href={confirmationUrl}>
+            Einladung annehmen →
+          </Button>
+        </Section>
         <Text style={footer}>
-          If you weren't expecting this invitation, you can safely ignore this
-          email.
+          Du hast keine Einladung erwartet? Dann ignoriere diese E-Mail.
         </Text>
+        <Text style={signature}>— Scorlink · Wien</Text>
       </Container>
     </Body>
   </Html>
@@ -53,27 +52,49 @@ export const InviteEmail = ({
 
 export default InviteEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+}
+const container = { padding: '40px 32px', maxWidth: '560px' }
+const brand = { borderBottom: '1px solid #5C1A1F', paddingBottom: '20px', marginBottom: '32px' }
+const brandMark = {
+  fontFamily: 'Georgia, "Times New Roman", serif',
   fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
+  fontWeight: 600 as const,
+  color: '#5C1A1F',
+  margin: 0,
+  letterSpacing: '-0.02em',
 }
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+const h1 = {
+  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontSize: '38px',
+  fontWeight: 400 as const,
+  color: '#5C1A1F',
+  margin: '0 0 28px',
+  letterSpacing: '-0.02em',
+  lineHeight: '1.1',
 }
-const link = { color: 'inherit', textDecoration: 'underline' }
+const text = { fontSize: '15px', color: '#5C1A1F', lineHeight: '1.6', margin: '0 0 20px' }
+const link = { color: '#5C1A1F', textDecoration: 'underline' }
+const buttonWrap = { margin: '32px 0' }
 const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
+  backgroundColor: '#5C1A1F',
+  color: '#EDE3D0',
   fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontWeight: 500 as const,
+  borderRadius: '0',
+  padding: '14px 24px',
   textDecoration: 'none',
+  letterSpacing: '0.02em',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const footer = { fontSize: '13px', color: '#5C1A1F', opacity: 0.7, margin: '32px 0 0' }
+const signature = {
+  fontSize: '12px',
+  color: '#5C1A1F',
+  opacity: 0.6,
+  margin: '24px 0 0',
+  borderTop: '1px solid #5C1A1F',
+  paddingTop: '20px',
+  letterSpacing: '0.04em',
+}

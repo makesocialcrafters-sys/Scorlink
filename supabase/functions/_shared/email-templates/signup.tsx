@@ -11,6 +11,7 @@ import {
   Html,
   Link,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -27,32 +28,36 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="de" dir="ltr">
     <Head />
-    <Preview>Confirm your email for {siteName}</Preview>
+    <Preview>Bestätige deine E-Mail für Scorlink</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
+        <Section style={brand}>
+          <Text style={brandMark}>Scorlink</Text>
+        </Section>
+        <Heading style={h1}>Werd gesehen.</Heading>
         <Text style={text}>
-          Thanks for signing up for{' '}
+          Danke, dass du dich bei{' '}
           <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
-          </Link>
-          !
+            <strong>Scorlink</strong>
+          </Link>{' '}
+          angemeldet hast. Bestätige deine E-Mail-Adresse ({recipient}), um dein
+          Profil zu aktivieren.
         </Text>
+        <Section style={buttonWrap}>
+          <Button style={button} href={confirmationUrl}>
+            E-Mail bestätigen →
+          </Button>
+        </Section>
         <Text style={text}>
-          Please confirm your email address (
-          <Link href={`mailto:${recipient}`} style={link}>
-            {recipient}
-          </Link>
-          ) by clicking the button below:
+          Anschließend: Profil ausfüllen, Videos hochladen, von Scouts
+          gefunden werden.
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Verify Email
-        </Button>
         <Text style={footer}>
-          If you didn't create an account, you can safely ignore this email.
+          Du hast dich nicht registriert? Dann ignoriere diese E-Mail einfach.
         </Text>
+        <Text style={signature}>— Scorlink · Wien</Text>
       </Container>
     </Body>
   </Html>
@@ -60,27 +65,54 @@ export const SignupEmail = ({
 
 export default SignupEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+}
+const container = { padding: '40px 32px', maxWidth: '560px' }
+const brand = { borderBottom: '1px solid #5C1A1F', paddingBottom: '20px', marginBottom: '32px' }
+const brandMark = {
+  fontFamily: 'Georgia, "Times New Roman", serif',
   fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
+  fontWeight: 600 as const,
+  color: '#5C1A1F',
+  margin: 0,
+  letterSpacing: '-0.02em',
+}
+const h1 = {
+  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontSize: '38px',
+  fontWeight: 400 as const,
+  color: '#5C1A1F',
+  margin: '0 0 28px',
+  letterSpacing: '-0.02em',
+  lineHeight: '1.1',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+  fontSize: '15px',
+  color: '#5C1A1F',
+  lineHeight: '1.6',
+  margin: '0 0 20px',
 }
-const link = { color: 'inherit', textDecoration: 'underline' }
+const link = { color: '#5C1A1F', textDecoration: 'underline' }
+const buttonWrap = { margin: '32px 0' }
 const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
+  backgroundColor: '#5C1A1F',
+  color: '#EDE3D0',
   fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontWeight: 500 as const,
+  borderRadius: '0',
+  padding: '14px 24px',
   textDecoration: 'none',
+  letterSpacing: '0.02em',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const footer = { fontSize: '13px', color: '#5C1A1F', opacity: 0.7, margin: '32px 0 0' }
+const signature = {
+  fontSize: '12px',
+  color: '#5C1A1F',
+  opacity: 0.6,
+  margin: '24px 0 0',
+  borderTop: '1px solid #5C1A1F',
+  paddingTop: '20px',
+  letterSpacing: '0.04em',
+}

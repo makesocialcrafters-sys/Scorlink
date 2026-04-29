@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,12 +6,26 @@ import { supabase } from "@/integrations/supabase/client";
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) navigate("/", { replace: true });
+    if (loading) return;
+    if (!user) {
+      navigate("/", { replace: true });
+      return;
+    }
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!data) navigate("/onboarding", { replace: true });
+      else setChecking(false);
+    })();
   }, [user, loading, navigate]);
 
-  if (loading || !user) {
+  if (loading || !user || checking) {
     return <div className="min-h-screen bg-cream" />;
   }
 

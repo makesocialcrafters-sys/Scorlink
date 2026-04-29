@@ -30,7 +30,7 @@ const Hero = () => {
         </h1>
 
         <p className="font-display-italic mb-[52px] max-w-[580px] text-[clamp(18px,1.6vw,22px)] font-normal leading-[1.5] tracking-[-0.005em] text-bordeaux opacity-[0.78]">
-          Lade dein Spiel hoch. Bekomme die Coach-Analyse. Werde sichtbar — für Vereine, für Scouts, für dich selbst.
+          Lade dein Spiel hoch. Werde sichtbar — für Vereine, für Scouts, für dich selbst.
         </p>
 
         <div className="flex flex-wrap items-center gap-7">

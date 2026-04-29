@@ -10,15 +10,15 @@ type Tier = {
 
 const tiers: Tier[] = [
   {
-    tier: "Erste Analyse",
+    tier: "Start",
     name: "Gratis.",
     price: "€ 0",
-    period: "Dein erster Report ist kostenlos",
+    period: "Dein Einstieg ist kostenlos",
     features: [
       { text: "Profil anlegen", yes: true },
-      { text: "Ein Spiel analysieren", yes: true },
-      { text: "Voller Coach-Report", yes: true },
-      { text: "Weitere Analysen", yes: false },
+      { text: "Ein Video hochladen", yes: true },
+      { text: "Basis-Sichtbarkeit", yes: true },
+      { text: "Weitere Videos", yes: false },
       { text: "Sichtbar im Discover", yes: false },
     ],
     cta: "Kostenlos testen",
@@ -29,8 +29,8 @@ const tiers: Tier[] = [
     price: "€ 9,90",
     period: "Pro Monat · jederzeit kündbar",
     features: [
-      { text: "Unbegrenzte Analysen", yes: true },
-      { text: "Volle Coach-Reports", yes: true },
+      { text: "Unbegrenzte Video-Uploads", yes: true },
+      { text: "Volles Profil", yes: true },
       { text: "Sichtbar im Discover", yes: true },
       { text: "Priorität bei Scouts", yes: true },
       { text: "Entwicklungs-Historie", yes: true },
@@ -52,8 +52,8 @@ const Pricing = () => {
             Pricing
           </div>
           <h2 className="font-display mx-auto max-w-[900px] text-[clamp(48px,7vw,92px)] font-normal leading-none tracking-[-0.04em] text-bordeaux">
-            Eine Stunde Coach.<br />
-            <span className="font-display-italic">Oder ein Monat Scorlink.</span>
+            Ein Profil.<br />
+            <span className="font-display-italic">Ein Monat Scorlink.</span>
           </h2>
         </div>
 

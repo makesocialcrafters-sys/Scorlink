@@ -47,7 +47,7 @@ const Dashboard = () => {
             <span className="font-display-italic">{user.email?.split("@")[0]}.</span>
           </h1>
           <p className="font-display-italic max-w-[580px] text-[clamp(18px,1.6vw,22px)] leading-[1.5] text-bordeaux opacity-[0.78]">
-            Lade dein erstes Spiel hoch und starte deine Coach-Analyse.
+            Lade dein erstes Video hoch und werde sichtbar.
           </p>
         </div>
       </section>

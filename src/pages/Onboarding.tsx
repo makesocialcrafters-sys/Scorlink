@@ -63,8 +63,18 @@ const Onboarding = () => {
     }
 
     setSubmitting(true);
+    const d = parsed.data;
     const { error } = await supabase.from("profiles").insert([
-      { user_id: user.id, ...parsed.data },
+      {
+        user_id: user.id,
+        full_name: d.full_name,
+        age: d.age,
+        club: d.club,
+        position: d.position,
+        dominant_foot: d.dominant_foot,
+        league: d.league,
+        city: d.city,
+      },
     ]);
     setSubmitting(false);
 

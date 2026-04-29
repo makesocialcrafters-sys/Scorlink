@@ -18,6 +18,7 @@ const Index = () => {
       <Facts />
       <How />
       <Fomo />
+      <Waitlist />
       <Pricing />
       <FinalCta />
       <Footer />

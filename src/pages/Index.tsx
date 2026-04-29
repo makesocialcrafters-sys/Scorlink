@@ -4,6 +4,7 @@ import BigStat from "@/components/scorlink/BigStat";
 import Facts from "@/components/scorlink/Facts";
 import How from "@/components/scorlink/How";
 import Fomo from "@/components/scorlink/Fomo";
+import Waitlist from "@/components/scorlink/Waitlist";
 import Pricing from "@/components/scorlink/Pricing";
 import FinalCta from "@/components/scorlink/FinalCta";
 import Footer from "@/components/scorlink/Footer";
@@ -17,6 +18,7 @@ const Index = () => {
       <Facts />
       <How />
       <Fomo />
+      <Waitlist />
       <Pricing />
       <FinalCta />
       <Footer />

@@ -63,10 +63,9 @@ const Onboarding = () => {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.from("profiles").insert({
-      user_id: user.id,
-      ...parsed.data,
-    });
+    const { error } = await supabase.from("profiles").insert([
+      { user_id: user.id, ...parsed.data },
+    ]);
     setSubmitting(false);
 
     if (error) {

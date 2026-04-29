@@ -110,7 +110,7 @@ export type Database = {
           dominant_foot: Database["public"]["Enums"]["dominant_foot"]
           full_name: string
           id: string
-          league: string
+          league: Database["public"]["Enums"]["player_league"]
           position: Database["public"]["Enums"]["player_position"]
           updated_at: string
           user_id: string
@@ -123,7 +123,7 @@ export type Database = {
           dominant_foot: Database["public"]["Enums"]["dominant_foot"]
           full_name: string
           id?: string
-          league: string
+          league: Database["public"]["Enums"]["player_league"]
           position: Database["public"]["Enums"]["player_position"]
           updated_at?: string
           user_id: string
@@ -136,7 +136,7 @@ export type Database = {
           dominant_foot?: Database["public"]["Enums"]["dominant_foot"]
           full_name?: string
           id?: string
-          league?: string
+          league?: Database["public"]["Enums"]["player_league"]
           position?: Database["public"]["Enums"]["player_position"]
           updated_at?: string
           user_id?: string
@@ -200,6 +200,13 @@ export type Database = {
     }
     Enums: {
       dominant_foot: "Links" | "Rechts" | "Beidfüßig"
+      player_league:
+        | "Hobbyliga"
+        | "Stadtliga"
+        | "Landesliga"
+        | "Regionalliga"
+        | "3. Liga"
+        | "Akademie"
       player_position:
         | "TW"
         | "IV"
@@ -338,6 +345,14 @@ export const Constants = {
   public: {
     Enums: {
       dominant_foot: ["Links", "Rechts", "Beidfüßig"],
+      player_league: [
+        "Hobbyliga",
+        "Stadtliga",
+        "Landesliga",
+        "Regionalliga",
+        "3. Liga",
+        "Akademie",
+      ],
       player_position: ["TW", "IV", "AV", "DM", "CM", "OM", "LF", "RF", "ST"],
     },
   },

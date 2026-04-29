@@ -1,7 +1,7 @@
 const steps = [
-  { num: "01", title: "Profil.", text: "Position, Verein, Alter, starker Fuß. In zwei Minuten fertig." },
-  { num: "02", title: "Hochladen.", text: "Spielvideo rein. Die KI findet dich, analysiert dein Spiel, schreibt deinen Coach-Report." },
-  { num: "03", title: "Sichtbar.", text: "Dein Profil landet im Discover. Vereine und Verbände finden dich dort." },
+  { num: "01", title: "Profil.", text: "Erstelle dein Profil." },
+  { num: "02", title: "Videos.", text: "Lade deine Videos hoch." },
+  { num: "03", title: "Sichtbar.", text: "Werde von Scouts gefunden." },
 ];
 
 const How = () => {

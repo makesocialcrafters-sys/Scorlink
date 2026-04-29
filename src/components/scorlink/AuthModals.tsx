@@ -125,7 +125,7 @@ export const AuthModalProvider = ({ children }: { children: ReactNode }) => {
                   Werd <span className="font-display-italic">Spieler.</span>
                 </DialogTitle>
                 <DialogDescription className="font-body text-[13px] text-bordeaux/70">
-                  Erste Analyse gratis · Keine Kreditkarte
+                  Kostenlos starten · Keine Kreditkarte
                 </DialogDescription>
               </DialogHeader>
               <button onClick={handleGoogle} disabled={busy} className={secondaryBtn}>

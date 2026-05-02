@@ -1,0 +1,3 @@
+ALTER TABLE public.waitlist
+  ADD COLUMN IF NOT EXISTS full_name TEXT,
+  ADD COLUMN IF NOT EXISTS position TEXT;

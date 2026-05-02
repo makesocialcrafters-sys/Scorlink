@@ -44,7 +44,7 @@ const Index = () => {
       <nav className="flex items-center justify-between border-b border-bordeaux px-6 py-6 md:px-10">
         <span className="font-display text-[23px] font-semibold tracking-[-0.02em]">Scorlink</span>
         <span className="font-mono-meta hidden text-[11px] font-medium uppercase tracking-[0.32em] text-bordeaux opacity-65 sm:inline">
-          Wien · Coming Soon
+          Coming Soon
         </span>
       </nav>
 
@@ -70,7 +70,7 @@ const Index = () => {
 
           <p className="font-display-italic mx-auto mb-14 max-w-[560px] text-[clamp(18px,1.6vw,22px)] font-normal leading-[1.5] tracking-[-0.01em] text-bordeaux opacity-[0.78]">
             Scorlink ist die Plattform für Spieler, die nicht warten wollen, entdeckt zu werden. Trag dich ein —
-            wir melden uns, sobald es in Wien losgeht.
+            wir melden uns, sobald es losgeht.
           </p>
 
           {success ? (

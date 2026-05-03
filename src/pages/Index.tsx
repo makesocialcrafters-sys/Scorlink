@@ -3,7 +3,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-const POSITIONS = ["TW", "IV", "AV", "DM", "CM", "OM", "LF", "RF", "ST"] as const;
+const POSITIONS = ["TW", "IV", "AV", "DM", "ZM", "CM", "OM", "LF", "RF", "ST"] as const;
 
 const schema = z.object({
   full_name: z.string().trim().min(2, "Bitte gib deinen Namen ein.").max(80),

@@ -175,10 +175,21 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="border-t border-bordeaux px-6 py-8 text-center md:px-10">
+      <footer className="flex flex-col items-center gap-5 border-t border-bordeaux px-6 py-8 text-center md:flex-row md:justify-between md:px-10 md:text-left">
         <span className="font-mono-meta text-[11px] font-medium uppercase tracking-[0.32em] text-bordeaux opacity-65">
           © Scorlink 2026
         </span>
+        <nav className="font-mono-meta flex flex-wrap items-center justify-center gap-6 text-[11px] font-medium uppercase tracking-[0.28em] text-bordeaux">
+          <a href="/legal/impressum" className="text-bordeaux no-underline opacity-65 transition-opacity hover:opacity-100">
+            Impressum
+          </a>
+          <a href="/legal/datenschutz" className="text-bordeaux no-underline opacity-65 transition-opacity hover:opacity-100">
+            Datenschutz
+          </a>
+          <a href="/legal/agb" className="text-bordeaux no-underline opacity-65 transition-opacity hover:opacity-100">
+            AGB
+          </a>
+        </nav>
       </footer>
     </main>
   );

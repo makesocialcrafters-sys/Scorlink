@@ -30,8 +30,8 @@ const DSGVO_CONTACT = (
     <p>1200 Wien, Österreich</p>
     <p>
       E-Mail:{" "}
-      <a href="mailto:datenschutz@scorlink.com" className="underline">
-        datenschutz@scorlink.com
+      <a href="mailto:omar@scorlink.com" className="underline">
+        omar@scorlink.com
       </a>
     </p>
   </>
@@ -167,8 +167,8 @@ const PAGES: Record<string, { title: string; sections: Section[] }> = {
             </ul>
             <p className="mt-3">
               Zur Ausübung deiner Rechte wende dich an:{" "}
-              <a href="mailto:datenschutz@scorlink.com" className="underline">
-                datenschutz@scorlink.com
+              <a href="mailto:omar@scorlink.com" className="underline">
+                omar@scorlink.com
               </a>
             </p>
             <p className="mt-3">

@@ -4,15 +4,18 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 const POSITIONS = ["TW", "IV", "AV", "DM", "ZM", "CM", "OM", "LF", "RF", "ST"] as const;
+const GENDERS = ["Spieler", "Spielerin"] as const;
 
 const schema = z.object({
   full_name: z.string().trim().min(2, "Bitte gib deinen Namen ein.").max(80),
+  gender: z.enum(GENDERS, { errorMap: () => ({ message: "Bitte wähl Spieler oder Spielerin." }) }),
   position: z.enum(POSITIONS, { errorMap: () => ({ message: "Bitte wähl deine Position." }) }),
   email: z.string().trim().email("Bitte gib eine gültige E-Mail ein.").max(255),
 });
 
 const Index = () => {
   const [fullName, setFullName] = useState("");
+  const [gender, setGender] = useState<string>("");
   const [position, setPosition] = useState<string>("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +23,7 @@ const Index = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = schema.safeParse({ full_name: fullName, position, email });
+    const parsed = schema.safeParse({ full_name: fullName, gender, position, email });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
@@ -29,6 +32,7 @@ const Index = () => {
     const { error } = await supabase.from("waitlist").insert({
       email: parsed.data.email.toLowerCase(),
       full_name: parsed.data.full_name,
+      gender: parsed.data.gender,
       position: parsed.data.position,
     });
     setLoading(false);
@@ -95,6 +99,29 @@ const Index = () => {
                   disabled={loading}
                   className="font-body w-full border border-bordeaux bg-cream px-5 py-[18px] text-[15px] tracking-[0.01em] text-bordeaux placeholder:text-bordeaux/40 focus:outline-none focus:ring-1 focus:ring-bordeaux disabled:opacity-50"
                 />
+              </div>
+
+              <div>
+                <label className="font-mono-meta mb-3 block text-[10px] font-medium uppercase tracking-[0.28em] text-bordeaux opacity-70">
+                  Ich bin
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {GENDERS.map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setGender(g)}
+                      disabled={loading}
+                      className={`font-body border border-bordeaux px-5 py-[10px] text-[13px] font-medium tracking-[0.04em] transition-all duration-200 ${
+                        gender === g
+                          ? "bg-bordeaux text-cream"
+                          : "bg-cream text-bordeaux hover:bg-bordeaux/10"
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div>

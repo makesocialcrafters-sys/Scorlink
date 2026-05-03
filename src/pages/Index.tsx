@@ -91,7 +91,7 @@ const Index = () => {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Vor- und Nachname"
+                  placeholder="Name"
                   disabled={loading}
                   className="font-body w-full border border-bordeaux bg-cream px-5 py-[18px] text-[15px] tracking-[0.01em] text-bordeaux placeholder:text-bordeaux/40 focus:outline-none focus:ring-1 focus:ring-bordeaux disabled:opacity-50"
                 />

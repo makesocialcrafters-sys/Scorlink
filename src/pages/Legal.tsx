@@ -137,9 +137,9 @@ const PAGES: Record<string, { title: string; sections: Section[] }> = {
         body: (
           <>
             <p>
-              Deine Daten werden auf Servern von Supabase (Supabase Inc., San Francisco, USA) gespeichert.
-              Supabase ist nach dem EU-US Data Privacy Framework zertifiziert und bietet ein angemessenes
-              Datenschutzniveau gemäß DSGVO.
+              Deine Daten werden ausschließlich auf Servern innerhalb der Europäischen Union gespeichert
+              und verarbeitet. Damit gilt durchgehend das hohe Datenschutzniveau der DSGVO — deine Daten
+              verlassen den europäischen Rechtsraum nicht.
             </p>
             <p className="mt-3">
               Deine Daten werden so lange gespeichert, wie dein Konto aktiv ist. Nach Löschung deines
